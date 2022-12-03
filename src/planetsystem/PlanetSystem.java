@@ -1,75 +1,75 @@
 package planetsystem;
 
+import java.util.ArrayList;
+import processing.core.PApplet;
 
-
-import processing.core.*;
-
-/**
- * This is a template class and can be used to start a new processing Library.
- * Make sure you rename this class as well as the name of the example package 'template' 
- * to your own Library naming convention.
- * 
- * (the tag example followed by the name of an example included in folder 'examples' will
- * automatically include the example in the javadoc.)
- *
- * @example Hello 
- */
-
-public class PlanetSystem {
+public class PlanetSystem extends ArrayList<Planet> {
 	
-	// myParent is a reference to the parent sketch
-	PApplet myParent;
-
-	int myVariable = 0;
+	PApplet parent;
 	
-	public final static String VERSION = "##library.prettyVersion##";
+	float x, y, z;
+	float speed = 1;
 	
-
 	/**
-	 * a Constructor, usually called in the setup() method in your sketch to
-	 * initialize and start the Library.
+	 * Creates a new Planetary System
 	 * 
-	 * @example Hello
 	 * @param theParent the parent PApplet
+	 * @param posx the x position of the center of the system
+	 * @param posy the y position of the center of the system
+	 * @param posz the z position of the center of the system
 	 */
-	public PlanetSystem(PApplet theParent) {
-		myParent = theParent;
-		welcome();
+	public PlanetSystem(PApplet theParent, float posx, float posy, float posz) {
+		super();
+		
+		parent = theParent;
+		x = posx;
+		y = posy;
+		z = posz;
 	}
 	
-	
-	private void welcome() {
-		System.out.println("##library.name## ##library.prettyVersion## by ##author##");
-	}
-	
-	
-	public String sayHello() {
-		return "hello library.";
-	}
 	/**
-	 * return the version of the Library.
+	 * Creates a new Planetary System
 	 * 
-	 * @return String
+	 * @param theParent the parent PApplet
+	 * @param positions a PVector with the x,y,z position of the center of the system
 	 */
-	public static String version() {
-		return VERSION;
+	public PlanetSystem(PApplet theParent, float[] positions) {
+		super();
+		
+		parent = theParent;
+		x = positions[0];
+		y = positions[1];
+		z = positions[2];
 	}
-
-	/**
-	 * 
-	 * @param theA the width of test
-	 * @param theB the height of test
-	 */
-	public void setVariable(int theA, int theB) {
-		myVariable = theA + theB;
+	
+	@Override
+	public boolean add(Planet planet) {
+		planet.setApplet(parent);
+		return super.add(planet);
 	}
-
-	/**
-	 * 
-	 * @return int
-	 */
-	public int getVariable() {
-		return myVariable;
+	
+	public void setSpeed(float s) {
+		speed = s;
+	}
+	
+	public float getSpeed() {
+		return speed;
+	}
+	
+	public void setPosition(float posx, float posy, float posz) {
+		x = posx;
+		y = posy;
+		z = posz;
+	}
+	
+	public float[] getPosition() {
+		float[] pos = {x,y,z};
+		return pos;
+	}
+	
+	public void draw() {
+		for (int i = 1; i<this.size(); i++) {
+		    this.get(i).draw(speed);
+		  }
 	}
 }
-
