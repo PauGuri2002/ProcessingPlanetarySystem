@@ -1,4 +1,5 @@
-package template.library;
+package planetsystem;
+
 
 
 import processing.core.*;
@@ -14,7 +15,7 @@ import processing.core.*;
  * @example Hello 
  */
 
-public class HelloLibrary {
+public class PlanetSystem {
 	
 	// myParent is a reference to the parent sketch
 	PApplet myParent;
@@ -31,7 +32,7 @@ public class HelloLibrary {
 	 * @example Hello
 	 * @param theParent the parent PApplet
 	 */
-	public HelloLibrary(PApplet theParent) {
+	public PlanetSystem(PApplet theParent) {
 		myParent = theParent;
 		welcome();
 	}
