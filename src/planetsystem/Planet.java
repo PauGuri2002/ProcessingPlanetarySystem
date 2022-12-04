@@ -132,4 +132,12 @@ public class Planet implements PConstants {
 		double[] pos = {distance*Math.cos(angle), distance*Math.sin(angle)};
 		return pos;
 	}
+	
+	/*
+	 * TO DO
+	 * 
+	 * - Implement planet rings
+	 * - Implement get for most variables
+	 * 
+	 */
 }
