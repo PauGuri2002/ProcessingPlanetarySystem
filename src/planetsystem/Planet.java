@@ -5,53 +5,78 @@ import processing.core.*;
 public class Planet implements PConstants {
 	PApplet applet;
 	
-	int r, size;
-	  float v, ov, ringAngle;
-	  PShape p, l;
-	  ArrayList<Planet> moons = new ArrayList<Planet>();
+	  float distance, radius, angle, orbitalSpeed, ringAngle;
+	  PShape sphere;
+	  ArrayList<Planet> childPlanets = new ArrayList<Planet>();
 	
-	  public Planet(int radio, int tam, float vel_orbital, PImage tex) {
-		r = radio;
-	    v = applet.random(TWO_PI);
-	    ov = vel_orbital;
-	    size = tam;
-	    p = applet.createShape(SPHERE, tam);
-	    p.setTexture(tex);
-	    ringAngle = PApplet.radians(applet.random(-30, 30));
-	  }
-	  
-	  protected void setApplet(PApplet a) {
+	  public Planet(PApplet a, float distance_, float radius_, float orbitalSpeed_) {
 		  applet = a;
+		  distance = distance_;
+		  orbitalSpeed = orbitalSpeed_;
+		  radius = radius_;
+		  angle = applet.random(TWO_PI);
+		  sphere = applet.createShape(SPHERE, radius);
+		  ringAngle = PApplet.radians(applet.random(-30, 30));
 	  }
 	  
-	  public boolean addChild(Planet planet) {
-		  planet.setApplet(applet);
-		  moons.add(planet);
-		  return true;
+	  public Planet setTexture(PImage img) {
+		  sphere.setTexture(img);
+		  return this;
+	  }
+	  
+	  public Planet noTexture() {
+		  sphere.noTexture();
+		  return this;
+	  }
+	  
+	  public Planet setColor(int r, int g, int b) {
+		  sphere.fill(r,g,b);
+		  return this;
+	  }
+	  
+	  public Planet setDistance(float distance_) {
+		  distance = distance_;
+		  return this;
+	  }
+	  
+	  public Planet setRadius(float radius_) {
+		  radius = radius_;
+		  return this;
+	  }
+	  
+	  public Planet setOrbitalSpeed(float orbitalSpeed_) {
+		  orbitalSpeed = orbitalSpeed_;
+		  return this;
+	  }
+	  
+	  public Planet addChild(float distance_, float radius_, float orbitalSpeed_) {
+		  Planet p = new Planet(applet, distance_, radius_, orbitalSpeed_);
+		  childPlanets.add(p);
+		  return p;
 	  }
 	
 	  public void draw(float speedMultiplier) {
 	    
 	    applet.push();
-	    applet.rotate(v);
-	    applet.translate(r, 0, 0);
+	    applet.rotate(angle);
+	    applet.translate(distance, 0, 0);
 	    applet.push();
 	    applet.rotateX(PApplet.radians(-90));
-	    applet.shape(p);
+	    applet.shape(sphere);
 	    applet.pop();
-	    for(int i = 0; i<moons.size(); i++){
-	      moons.get(i).draw(speedMultiplier);
+	    
+	    for(int i = 0; i<childPlanets.size(); i++){
+	      childPlanets.get(i).draw(speedMultiplier);
 	    }
-	
 	    applet.pop();
 	
-	    v = v + ov*speedMultiplier/applet.frameRate;
+	    angle+= orbitalSpeed*speedMultiplier/applet.frameRate;
 	  }
 	  
 	  public void renderRing(PImage img){
 		  applet.push();
-		  applet.rotate(v);
-		  applet.translate(r, 0, 0);
+		  applet.rotate(angle);
+		  applet.translate(distance, 0, 0);
 		  applet.scale(0.9f);
 		  applet.rotateX(ringAngle);
 		  applet.image(img, -152.5f, -152.5f);
@@ -59,11 +84,11 @@ public class Planet implements PConstants {
 	  }
 	  
 	  public double[] getPosition(){
-	    double[] pos = {r*Math.cos(v), r*Math.sin(v)};
+	    double[] pos = {distance*Math.cos(angle), distance*Math.sin(angle)};
 	    return pos;
 	  }
 	  
-	  public int getSize(){
-	    return size;
+	  public float getRadius(){
+	    return radius;
 	  }
 }

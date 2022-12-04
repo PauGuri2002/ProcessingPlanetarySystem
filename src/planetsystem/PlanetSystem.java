@@ -5,61 +5,65 @@ import processing.core.PApplet;
 
 public class PlanetSystem extends ArrayList<Planet> {
 	
-	PApplet parent;
+	private static final long serialVersionUID = 5957382547036955476L;
+
+	PApplet applet;
 	
-	float x, y, z;
+	float x = 0, y = 0, z = 0;
 	float speed = 1;
 	
-	/**
-	 * Creates a new Planetary System
-	 * 
-	 * @param theParent the parent PApplet
-	 * @param posx the x position of the center of the system
-	 * @param posy the y position of the center of the system
-	 * @param posz the z position of the center of the system
-	 */
-	public PlanetSystem(PApplet theParent, float posx, float posy, float posz) {
+	public PlanetSystem(PApplet a) {
 		super();
 		
-		parent = theParent;
+		applet = a;
+	}
+	
+	public PlanetSystem(PApplet a, float posx, float posy) {
+		super();
+		
+		applet = a;
+		x = posx;
+		y = posy;
+	}
+	
+	public PlanetSystem(PApplet a, float posx, float posy, float posz) {
+		super();
+		
+		applet = a;
 		x = posx;
 		y = posy;
 		z = posz;
 	}
 	
-	/**
-	 * Creates a new Planetary System
-	 * 
-	 * @param theParent the parent PApplet
-	 * @param positions a PVector with the x,y,z position of the center of the system
-	 */
-	public PlanetSystem(PApplet theParent, float[] positions) {
+	public PlanetSystem(PApplet a, float[] positions) {
 		super();
 		
-		parent = theParent;
+		applet = a;
 		x = positions[0];
 		y = positions[1];
 		z = positions[2];
 	}
 	
-	@Override
-	public boolean add(Planet planet) {
-		planet.setApplet(parent);
-		return super.add(planet);
+	public Planet addPlanet(int distance_, int radius_, float orbitalSpeed_) {
+		Planet p = new Planet(applet, distance_, radius_, orbitalSpeed_);
+		super.add(p);
+		return p;
 	}
 	
-	public void setSpeed(float s) {
+	public PlanetSystem setSimulationSpeed(float s) {
 		speed = s;
+		return this;
 	}
 	
-	public float getSpeed() {
+	public float getSimulationSpeed() {
 		return speed;
 	}
 	
-	public void setPosition(float posx, float posy, float posz) {
+	public PlanetSystem setPosition(float posx, float posy, float posz) {
 		x = posx;
 		y = posy;
 		z = posz;
+		return this;
 	}
 	
 	public float[] getPosition() {
