@@ -11,32 +11,39 @@ public class Planet implements PConstants {
 	private float radius = 10;
 	//private float ringAngle = 0;
 	private float distance = 0;
-	private float angle = 0;
-	private float orbitalSpeed = 0;
+	private float translationAngle = 0;
+	private float rotationAngle = 0;
+	private float translationPeriod = 0;
+	private float rotationPeriod = 0;
 	
+	PlanetType planetType;
 	PShape sphere;
 	Planet parent;
 	ArrayList<Planet> childPlanets = new ArrayList<Planet>();
 	
-	public Planet(PApplet a, float posX_, float posY_, float posZ_, float radius_) {
+	public Planet(PApplet a, float posX_, float posY_, float posZ_, float radius_, float rotationPeriod_) {
 		applet = a;
+		planetType = new ParentPlanet();
 		
 		posX = posX_;
 		posY = posY_;
 		posZ = posZ_;
 		parent = this;
 		radius = radius_;
+		rotationPeriod = rotationPeriod_;
 		sphere = applet.createShape(SPHERE, radius);
 		//ringAngle = PApplet.radians(applet.random(-30, 30));
 	}
 	
-	private Planet(PApplet a, Planet parent_, float distance_, float radius_, float orbitalSpeed_) {
+	private Planet(PApplet a, Planet parent_, float distance_, float radius_, float translationPeriod_, float rotationPeriod_) {
 		applet = a;
+		planetType = new ChildPlanet();
 		
 		parent = parent_;
 		distance = distance_;
-		orbitalSpeed = orbitalSpeed_;
-		angle = applet.random(TWO_PI);
+		translationPeriod = translationPeriod_;
+		rotationPeriod = rotationPeriod_;
+		translationAngle = (float) Math.random()*TWO_PI;
 		radius = radius_;
 		sphere = applet.createShape(SPHERE, radius);
 		//ringAngle = PApplet.radians(applet.random(-30, 30));
@@ -57,8 +64,16 @@ public class Planet implements PConstants {
 		return this;
 	}
 	
-	public Planet addChild(float distance_, float radius_, float orbitalSpeed_) {
-		Planet p = new Planet(applet, this, distance_, radius_, orbitalSpeed_);
+	public float[] getPosition() {
+		return planetType.getPosition();
+	}
+	
+	public float getRadius() {
+		return radius;
+	}
+	
+	public Planet addChild(float distance_, float radius_, float translationPeriod_, float rotationPeriod_) {
+		Planet p = new Planet(applet, this, distance_, radius_, translationPeriod_, rotationPeriod_);
 		childPlanets.add(p);
 	  	return p;
 	}
@@ -76,11 +91,11 @@ public class Planet implements PConstants {
 	}
 	
 	public void draw() {
-		this.render(1);
+		planetType.render(1);
 	}
 	
 	public void draw(float simulationSpeed) {
-		this.render(simulationSpeed);
+		planetType.render(simulationSpeed);
 	}
 	
 	public void drawChildren() {
@@ -92,29 +107,18 @@ public class Planet implements PConstants {
 	}
 	
 	public void drawAll() {
-		this.render(1);
+		planetType.render(1);
 		this.renderChildren(1);
 	}
 	
 	public void drawAll(float simulationSpeed) {
-		this.render(simulationSpeed);
+		planetType.render(simulationSpeed);
 		this.renderChildren(simulationSpeed);
-	}
-	
-	private void render(float simulationSpeed) {
-		applet.push();
-		applet.rotate(angle);
-		applet.translate(parent.posX + distance, parent.posY, parent.posZ);
-		applet.rotateX(PApplet.radians(-90));
-		applet.shape(sphere);
-		applet.pop();
-	
-		angle+= orbitalSpeed*simulationSpeed/applet.frameRate;
 	}
 	
 	public void renderChildren(float simulationSpeed) {
 		for(int i = 0; i<childPlanets.size(); i++){
-			childPlanets.get(i).draw(simulationSpeed);
+			childPlanets.get(i).drawAll(simulationSpeed);
 		}
 	}
 	
@@ -128,9 +132,54 @@ public class Planet implements PConstants {
 	  	applet.pop();
 	}*/
 	
-	public double[] getPosition(){
-		double[] pos = {distance*Math.cos(angle), distance*Math.sin(angle)};
-		return pos;
+	private float periodToAngularSpeed(float period) {
+		return period == 0 ? 0 : (2*PI) / (period*applet.frameRate);
+	}
+	
+	interface PlanetType {
+		public void render(float simulationSpeed);
+		public float[] getPosition();
+	}
+	
+	private class ParentPlanet implements PlanetType {
+		public void render(float simulationSpeed) {
+			applet.push();
+			applet.rotate(translationAngle);
+			applet.translate(posX, posY, posZ);
+			
+			applet.rotateX(-PI/2);
+			applet.rotateY(rotationAngle);
+			applet.shape(sphere);
+			applet.pop();
+			
+			rotationAngle += periodToAngularSpeed(rotationPeriod)*simulationSpeed;
+		}
+		
+		public float[] getPosition(){
+			float[] pos = {posX, posY, posZ};
+			return pos;
+		}
+	}
+	
+	private class ChildPlanet implements PlanetType {
+		public void render(float simulationSpeed) {
+			applet.push();
+			applet.rotate(translationAngle);
+			applet.translate(parent.getPosition()[0] + distance, parent.getPosition()[1], parent.getPosition()[2]);
+			
+			applet.rotateX(-PI/2);
+			applet.rotateY(rotationAngle);
+			applet.shape(sphere);
+			applet.pop();
+			
+			translationAngle += periodToAngularSpeed(translationPeriod)*simulationSpeed;
+			rotationAngle += periodToAngularSpeed(rotationPeriod)*simulationSpeed;
+		}
+		
+		public float[] getPosition(){
+			float[] pos = {(float) (parent.getPosition()[0] + distance*Math.cos(translationAngle)), (float) (parent.getPosition()[1] + distance*Math.sin(translationAngle)), parent.getPosition()[2]};
+			return pos;
+		}
 	}
 	
 	/*
@@ -138,6 +187,7 @@ public class Planet implements PConstants {
 	 * 
 	 * - Implement planet rings
 	 * - Implement get for most variables
+	 * - Separate planets into CentralPlanet and ChildPlanet?
 	 * 
 	 */
 }
