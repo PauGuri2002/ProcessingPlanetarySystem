@@ -42,12 +42,20 @@ PApplet applet;
 		return childPlanets.get(i);
 	}
 	
+	public Planet[] getAllChildren() {
+		return (Planet[]) childPlanets.toArray();
+	}
+	
 	public Planet removeChild(int i) {
 		return childPlanets.remove(i);
 	}
 	
 	public boolean removeChild(Planet p) {
 		return childPlanets.remove(p);
+	}
+	
+	public AstralBody getParent() {
+		return parent;
 	}
 	
 	public Planet setTexture(PImage img) {
@@ -70,8 +78,48 @@ PApplet applet;
 		return pos;
 	}
 	
+	public Planet setDistance(float distance_) {
+		distance = distance_;
+		return this;
+	}
+	
+	public float getDistance() {
+		return distance;
+	}
+	
+	public Planet setRadius(float radius_) {
+		radius = radius_;
+		return this;
+	}
+	
 	public float getRadius() {
 		return radius;
+	}
+	
+	public float getTranslationAngle() {
+		return translationAngle;
+	}
+	
+	public Planet setTranslationPeriod(float translationPeriod_) {
+		translationPeriod = translationPeriod_;
+		return this;
+	}
+	
+	public float getTranslationPeriod() {
+		return translationPeriod;
+	}
+	
+	public float getRotationAngle() {
+		return rotationAngle;
+	}
+	
+	public Planet setRotationPeriod(float rotationPeriod_) {
+		rotationPeriod = rotationPeriod_;
+		return this;
+	}
+	
+	public float getRotationPeriod() {
+		return rotationPeriod;
 	}
 	
 	public void draw() {
@@ -102,8 +150,9 @@ PApplet applet;
 	
 	public void render(float simulationSpeed) {
 		applet.push();
+		applet.translate(parent.getPosition()[0], parent.getPosition()[1], parent.getPosition()[2]);
 		applet.rotate(translationAngle);
-		applet.translate(parent.getPosition()[0] + distance, parent.getPosition()[1], parent.getPosition()[2]);
+		applet.translate(distance,0,0);
 		
 		applet.rotateX(-PI/2);
 		applet.rotateY(rotationAngle);

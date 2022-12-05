@@ -3,6 +3,15 @@ import processing.core.*;
 
 public interface AstralBody {
 	
+	public AstralBody addChild(float distance_, float radius_, float translationPeriod_, float rotationPeriod_);
+	
+	public AstralBody getChild(int i);
+	
+	public Planet[] getAllChildren();
+	
+	public AstralBody removeChild(int i);
+	
+	public boolean removeChild(Planet p);
 	
 	public AstralBody setTexture(PImage img);
 	
@@ -10,15 +19,15 @@ public interface AstralBody {
 	
 	public AstralBody setColor(int r, int g, int b);
 	
+	public AstralBody setRadius(float radius_);
+	
 	public float getRadius();
 	
-	public AstralBody addChild(float distance_, float radius_, float translationPeriod_, float rotationPeriod_);
+	public float getRotationAngle();
 	
-	public AstralBody getChild(int i);
+	public AstralBody setRotationPeriod(float rotationPeriod_);
 	
-	public AstralBody removeChild(int i);
-	
-	public boolean removeChild(Planet p);
+	public float getRotationPeriod();
 	
 	public void draw();
 	
@@ -50,8 +59,6 @@ public interface AstralBody {
 	 * TO DO
 	 * 
 	 * - Implement planet rings
-	 * - Implement get for most variables
-	 * - Fix planet childs not orbiting with the correct pivot
 	 * 
 	 */
 }
