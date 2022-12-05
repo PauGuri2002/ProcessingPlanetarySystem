@@ -51,6 +51,7 @@ public interface AstralBody {
 	 * 
 	 * - Implement planet rings
 	 * - Implement get for most variables
+	 * - Fix planet childs not orbiting with the correct pivot
 	 * 
 	 */
 }
