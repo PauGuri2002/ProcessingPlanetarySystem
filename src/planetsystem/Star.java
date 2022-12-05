@@ -6,29 +6,27 @@ import processing.core.PConstants;
 import processing.core.PImage;
 import processing.core.PShape;
 
-public class Planet implements AstralBody,PConstants {
-PApplet applet;
+public class Star implements AstralBody,PConstants {
+	PApplet applet;
 	
+	private float posX = 0;
+	private float posY = 0;
+	private float posZ = 0;
 	private float radius = 10;
-	private float distance = 0;
-	private float translationAngle = 0;
 	private float rotationAngle = 0;
-	private float translationPeriod = 0;
 	private float rotationPeriod = 0;
 	
-	AstralBody parent;
 	PShape sphere;
 	ArrayList<Planet> childPlanets = new ArrayList<Planet>();
 	
-	protected Planet(PApplet a, AstralBody parent_, float distance_, float radius_, float translationPeriod_, float rotationPeriod_) {
+	public Star(PApplet a, float posX_, float posY_, float posZ_, float radius_, float rotationPeriod_) {
 		applet = a;
 		
-		parent = parent_;
-		distance = distance_;
-		translationPeriod = translationPeriod_;
-		rotationPeriod = rotationPeriod_;
-		translationAngle = (float) Math.random()*TWO_PI;
+		posX = posX_;
+		posY = posY_;
+		posZ = posZ_;
 		radius = radius_;
+		rotationPeriod = rotationPeriod_;
 		sphere = applet.createShape(SPHERE, radius);
 	}
 	
@@ -50,23 +48,23 @@ PApplet applet;
 		return childPlanets.remove(p);
 	}
 	
-	public Planet setTexture(PImage img) {
+	public Star setTexture(PImage img) {
 		sphere.setTexture(img);
 		return this;
 	}
 	
-	public Planet noTexture() {
+	public Star noTexture() {
 		sphere.noTexture();
 		return this;
 	}
 	
-	public Planet setColor(int r, int g, int b) {
+	public Star setColor(int r, int g, int b) {
 		sphere.fill(r,g,b);
 		return this;
 	}
 	
 	public float[] getPosition(){
-		float[] pos = {(float) (parent.getPosition()[0] + distance*Math.cos(translationAngle)), (float) (parent.getPosition()[1] + distance*Math.sin(translationAngle)), parent.getPosition()[2]};
+		float[] pos = {posX, posY, posZ};
 		return pos;
 	}
 	
@@ -100,17 +98,14 @@ PApplet applet;
 		this.renderChildren(simulationSpeed);
 	}
 	
-	public void render(float simulationSpeed) {
+	private void render(float simulationSpeed) {
 		applet.push();
-		applet.rotate(translationAngle);
-		applet.translate(parent.getPosition()[0] + distance, parent.getPosition()[1], parent.getPosition()[2]);
-		
+		applet.translate(posX, posY, posZ);
 		applet.rotateX(-PI/2);
 		applet.rotateY(rotationAngle);
 		applet.shape(sphere);
 		applet.pop();
 		
-		translationAngle += periodToAngularSpeed(translationPeriod)*simulationSpeed;
 		rotationAngle += periodToAngularSpeed(rotationPeriod)*simulationSpeed;
 	}
 	
