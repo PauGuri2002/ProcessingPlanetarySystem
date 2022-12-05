@@ -1,6 +1,12 @@
 package planetsystem;
 import processing.core.*;
 
+/**
+ * The AstralBody interface is the base for all the other classes.
+ * 
+ * @author Pau Guri Viura
+ *
+ */
 public interface AstralBody {
 	
 	public AstralBody addChild(float distance_, float radius_, float translationPeriod_, float rotationPeriod_);
